@@ -1,7 +1,7 @@
 import pymysql, logging, datetime
 
 now = datetime.datetime.now()
-log = r'C:\Users\David\Desktop\test_log.txt'
+log = r'test_log.txt'
 
 try:
     # Open database connection
