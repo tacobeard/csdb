@@ -10,9 +10,10 @@ ticket_id bigint,
 player_id bigint,
 platform tinytext,
 ticket_created datetime,
-ticket_solved datetime,
+last_update datetime,
 slot_name tinytext,
 ticket_tags tinytext,
+ticket_group tinytext
 
 primary key (id),
 index (player_id),
