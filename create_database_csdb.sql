@@ -8,12 +8,12 @@ create table tickets (
 id int not null auto_increment,
 ticket_id bigint,
 player_id bigint,
+group_id tinytext,
 platform tinytext,
 ticket_created datetime,
-last_update datetime,
-slot_name tinytext,
+ticket_solved datetime,
+locationtickets tinytext,
 ticket_tags tinytext,
-ticket_group tinytext
 
 primary key (id),
 index (player_id),
