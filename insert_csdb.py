@@ -11,13 +11,10 @@ db = pymysql.connect(host='localhost',
 cursor = db.cursor()
 
 # Prepare SQL query to INSERT a record into the database.
-sql = """INSERT INTO tickets(platform, player_id, location, ticket_id,
-ticket_tags, group, ticket_created, last_update)
-   VALUES("""+ticket_data.data+')'
+sql = """SET SESSION sql_mode = ""; INSERT INTO tickets(player_id, platform, location, ticket_id,ticket_tags, group_id, ticket_created, last_update) VALUES"""+ticket_data.data+';'
 try:
    # Execute the SQL command
    cursor.execute(sql)
-   # Commit your changes in the database
    db.commit()
    print('Database updated')
 except pymysql.ProgrammingError as p:
@@ -40,6 +37,11 @@ except pymysql.OperationalError as o:
    db.rollback() 
    print ("Caught an Operational Error:")
    print (o)
+except pymysql.InternalError as n:
+   db.rollback() 
+   print ("Caught an Internal Error:")
+   print (n)
+    
     
 # disconnect from server
 db.close()
