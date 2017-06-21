@@ -1,10 +1,17 @@
-import zenpy, datetime, zdcreds, pytz
+import zenpy, datetime, zdcreds #,pytz
 
+#authenticate with Zendesk client
 zenpy_client = zenpy.Zenpy(**zdcreds.creds)
 
-yesterday = datetime.datetime.now(pytz.utc) - datetime.timedelta(days=1)
-result_generator = zenpy_client.tickets.incremental(start_time=yesterday)
+#reads end time of last export, to be used as start time for new export
+with open("export_time.txt","r") as f:
+    export_time = f.read()
 
+#yesterday = datetime.datetime.now(pytz.utc) - datetime.timedelta(days=1)
+result_generator = zenpy_client.tickets.incremental(start_time=int(export_time))
+
+# Pulls ticket data and manually formats into SQL syntax
+# Output columns are ordered as follows: platform, player_id, location, ticket_id, ticket_tags, group, ticket_created, last_update
 custom = ''
 data = ''
 for ticket in result_generator:
@@ -14,6 +21,12 @@ for ticket in result_generator:
     data = data+'('+custom+'\"'+str(ticket.id)+'\", \"'+str(ticket.tags)+'\", \"'+str(ticket.group_id)+'\", '+'STR_TO_DATE(\''+str(ticket.created_at)+'\', \'%Y-%m-%dT%H:%i:%sZ\')'+', '+'STR_TO_DATE(\''+str(ticket.updated_at)+'\', \'%Y-%m-%dT%H:%i:%sZ\')),'+'\n'
     custom = ''
 data = data[:-2]
-# Output columns are ordered as follows: platform, player_id, location, ticket_id, ticket_tags, group, ticket_created, last_update
+
+# Writes end time of export to text file for use as start time of future export
+with open("export_time.txt","w+") as f:
+    f.write(str(result_generator.end_time))
+
+
+
 
 
